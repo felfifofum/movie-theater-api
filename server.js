@@ -1,7 +1,19 @@
 const express = require("express");
-const app = express();
-PORT = 3000
+const { db } = require("./db");
+const userRouter = require("./routes/user");
+const showRouter = require(`./routes/shows`);
+const seed = require("./seed");
 
-app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}`);
+const app = express();
+app.use(express.json());
+
+app.use(`/users`, userRouter);
+app.use(`/shows`, showRouter);
+
+const HOST = process.env["HOST"] || "localhost";
+const PORT = process.env["PORT"] || 3000;
+
+app.listen(PORT, async () => {
+  await seed();
+  console.log(`Listening on http://${HOST}:${PORT}`);
 });

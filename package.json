@@ -13,17 +13,19 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
-    "nodemon": "^2.0.20",
     "sequelize": "^6.25.5",
     "sqlite3": "^5.1.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felfifofum/movie-theater-api.git"
+    "url": "git+https://github.com/felicitybruce/movie-theater-api.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/felfifofum/movie-theater-api/issues"
+    "url": "https://github.com/felicitybruce/movie-theater-api/issues"
   },
-  "homepage": "https://github.com/felfifofum/movie-theater-api#readme"
+  "homepage": "https://github.com/felicitybruce/movie-theater-api#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
