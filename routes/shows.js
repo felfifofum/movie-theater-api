@@ -48,19 +48,59 @@ showRouter.get(`/genres/:uGenre`, async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
 // PUT (update) rating on specific show using endpoint e.g. PUT request to /shows/4/watched updates fourth show that's been watched - 4th show in list
-showRouter.put(`/:num/watched`, async (req, res) => {
-  const num = req.params.num;
-  /**
+showRouter.put(
+  `/:num/watched`,
+
+  //validation: rating field cant be empty or contain white spaces
+  body(`rating`)
+    .notEmpty()
+    .withMessage(`cant be blank`),
+  async (req, res) => {
+    const num = req.params.num;
+    /**
    * in PUT body thunder
    * {
   "rating":"test20"
   }
    */
-  const show = await Show.findByPk(num);
-  await show.update({ rating: req.body.rating });
-  res.status(200).send(show.rating);
-});
+    const errors = validationResult(req);
+    //check for blank scpec - custom
+    const containsSpace = /\s/.test(req.body.rating)
+    if (!errors.isEmpty() || containsSpace) {
+      return res.status(400).send({ errors: errors.array() });
+    }
+
+    const show = await Show.findByPk(num);
+    await show.update({ rating: req.body.rating });
+    res.status(200).send(show.rating);
+  }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // PUT (update) status on a specific show from 'cancelled' to 'on-going' or vice-versa using endpoint e.g. PUT req w endpoint /shows/3/updates updates 3rd show to 'cancelled' or 'ongoing'
 showRouter.put(
@@ -82,7 +122,9 @@ showRouter.put(
     if (req.params.status === `canceled` || req.params.status === `on-going`) {
       await show.update({ status: req.params.status });
 
-      return res.status(200).send(`${show.title}'s status has been changed to ${show.status}.`);
+      return res
+        .status(200)
+        .send(`${show.title}'s status has been changed to ${show.status}.`);
     }
 
     const errors = validationResult(req);
