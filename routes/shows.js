@@ -55,8 +55,7 @@ showRouter.put(
   `/:num/watched`,
 
   //validation: rating field cant be empty or contain white spaces
-  body(`rating`)
-    .notEmpty(),
+  body(`rating`).notEmpty(),
   async (req, res) => {
     const num = req.params.num;
     /**
@@ -67,14 +66,16 @@ showRouter.put(
    */
     const errors = validationResult(req);
     //check for blank scpec - custom
-    const containsSpace = /\s/.test(req.body.rating)
+    const containsSpace = /\s/.test(req.body.rating);
     if (!errors.isEmpty() || containsSpace) {
       return res.status(400).send({ errors: errors.array() });
     }
 
     const show = await Show.findByPk(num);
     await show.update({ rating: req.body.rating });
-    res.status(200).send(`${show.title}'s rating has been updated to ${show.rating}.`);
+    res
+      .status(200)
+      .send(`${show.title}'s rating has been updated to ${show.rating}.`);
   }
 );
 
@@ -115,8 +116,16 @@ showRouter.put(
 showRouter.delete(`/:sId`, async (req, res) => {
   const sId = req.params.sId;
   const show = await Show.findByPk(sId);
+
+  if (!show) {
+    return res
+      .status(404)
+      .send(
+        `The show with the id: ${req.params.sId} cannot be found and thus cannot be deleted.`
+      );
+  }
   await show.destroy();
-  res.sendStatus(200);
+  res.status(200).send(`Successfully deleted the show: ${show.title}`);
 });
 
 module.exports = showRouter;
