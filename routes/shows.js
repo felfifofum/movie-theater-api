@@ -48,26 +48,15 @@ showRouter.get(`/genres/:uGenre`, async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
 // PUT (update) rating on specific show using endpoint e.g. PUT request to /shows/4/watched updates fourth show that's been watched - 4th show in list
+
+//watched = rating
 showRouter.put(
   `/:num/watched`,
 
   //validation: rating field cant be empty or contain white spaces
   body(`rating`)
-    .notEmpty()
-    .withMessage(`cant be blank`),
+    .notEmpty(),
   async (req, res) => {
     const num = req.params.num;
     /**
@@ -85,24 +74,12 @@ showRouter.put(
 
     const show = await Show.findByPk(num);
     await show.update({ rating: req.body.rating });
-    res.status(200).send(show.rating);
+    res.status(200).send(`${show.title}'s rating has been updated to ${show.rating}.`);
   }
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // PUT (update) status on a specific show from 'cancelled' to 'on-going' or vice-versa using endpoint e.g. PUT req w endpoint /shows/3/updates updates 3rd show to 'cancelled' or 'ongoing'
+
 showRouter.put(
   `/:sId/:status`,
   //validation: status field cant be empty or contain whitespace and between 5 and 25 characters

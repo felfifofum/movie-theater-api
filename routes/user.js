@@ -27,7 +27,7 @@ userRouter.get(`/`, async (req, res) => {
 // GET one user from db using an endpoint e.g. /users/1 returns first user
 userRouter.get(`/:uId`, async (req, res) => {
   const uId = await User.findByPk(req.params.uId);
-  res.status(200).send(uId);
+  res.status(200).send({"The server has returned the following user ":uId});
 });
 
 // GET all shows watched by user using endpoint e.g. /users/2/shows returns all shows for second user
@@ -53,9 +53,13 @@ userRouter.get(`/:uId/shows`, async (req, res) => {
 
 //http://localhost:3000/users/1/shows/1 . --adding first user to first show
 userRouter.put(`/:uId/shows/:sId`, async (req, res) => {
+  //only using this for string interpolation pruposes
+  const userName = await User.findByPk(req.params.uId)
   const show = await Show.findByPk(req.params.sId);
   await show.update({ userId: req.params.uId });
-  res.status(200).send(req.params.show);
+  res.status(200).send(`${show.title} has been added to the client with the 
+  email: ${userName.username}
+  id: ${req.params.uId}.`);
 
 });
 
