@@ -8,9 +8,9 @@ const userRouter = Router();
 userRouter.post(`/`, async (req, res) => {
   try {
     const newUser = await User.create(req.body);
-    res.status(201).send({newUser})
+    res.status(201).send({ newUser });
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400).send(error);
   }
 });
 //--------------------------
@@ -27,7 +27,12 @@ userRouter.get(`/`, async (req, res) => {
 // GET one user from db using an endpoint e.g. /users/1 returns first user
 userRouter.get(`/:uId`, async (req, res) => {
   const uId = await User.findByPk(req.params.uId);
-  res.status(200).send({"The server has returned the following user ":uId});
+  if (!uId) {
+    return res.status(404).send(`can't find user: ${req.params.uId}`);
+  }
+  res
+    .status(200)
+    .send({ "The server has returned the following user ": uId });
 });
 
 // GET all shows watched by user using endpoint e.g. /users/2/shows returns all shows for second user
@@ -38,12 +43,12 @@ userRouter.get(`/:uId`, async (req, res) => {
 
 //setting user id on the foreign column of shows in the db
 userRouter.get(`/:uId/shows`, async (req, res) => {
-  const uId = req.params.uId
-  const user = await User.findByPk(uId)
+  const uId = req.params.uId;
+  const user = await User.findByPk(uId);
   if (!user) {
-    return res.status(404).send(`Failed to find user ${uId}`)
+    return res.status(404).send(`Failed to find user ${uId}`);
   }
-  const userShows = await user.getShows()
+  const userShows = await user.getShows();
   res.status(200).send(userShows);
 });
 
@@ -54,13 +59,12 @@ userRouter.get(`/:uId/shows`, async (req, res) => {
 //http://localhost:3000/users/1/shows/1 . --adding first user to first show
 userRouter.put(`/:uId/shows/:sId`, async (req, res) => {
   //only using this for string interpolation pruposes
-  const userName = await User.findByPk(req.params.uId)
+  const userName = await User.findByPk(req.params.uId);
   const show = await Show.findByPk(req.params.sId);
   await show.update({ userId: req.params.uId });
   res.status(200).send(`${show.title} has been added to the client with the 
   email: ${userName.username}
   id: ${req.params.uId}.`);
-
 });
 
 module.exports = userRouter;
